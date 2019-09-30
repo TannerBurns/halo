@@ -1,0 +1,9 @@
+README.md
+setup.py
+halo/__init__.py
+halo/halo.py
+halo.egg-info/PKG-INFO
+halo.egg-info/SOURCES.txt
+halo.egg-info/dependency_links.txt
+halo.egg-info/requires.txt
+halo.egg-info/top_level.txt

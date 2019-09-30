@@ -1,0 +1,30 @@
+Metadata-Version: 1.1
+Name: halo
+Version: 0.10
+Summary: Library to dynamically train and test different classifiers in bulk
+Home-page: https://www.github.com/tannerburns/halo
+Author: Tanner Burns
+Author-email: tjburns102@gmail.com
+License: UNKNOWN
+Description: # Halo
+        
+            Library to dynamically train and test different classifiers in bulk
+        
+        
+        # Example
+        
+        ```python
+        halo = halo()
+        train, test, train_labels, test_labels = halo.split_training_set(features, labels)
+        halo.fit(train, train_labels)
+        halo.test(test, test_labels)
+        halo.to_csv(filename='features.csv')
+        ```
+        
+Platform: UNKNOWN
+Classifier: Framework :: Django
+Classifier: Framework :: Django-Rest-Framework
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.7
