@@ -1,9 +1,10 @@
 import os
 import time
+import pickle
 import pandas
 import pandas_profiling
 
-
+# sklearn import for different classifiers
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
@@ -11,6 +12,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LinearRegression
 from sklearn.cluster import KMeans
 
+# sklearn utils
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
@@ -42,6 +44,20 @@ class halo:
         self.lr = LinearRegression()
 
 
+    def save(self, model, filename=''):
+        if not filename:
+            filename = os.path.join(self.basepath, f'halo_model_{str(time.time()).replace(".", "_")}.mdl')
+        with open(filename, 'wb') as fout:
+            pickle.dump(model, fout)
+        
+
+    def fit(self, model, train_features=None, train_labels=None):
+        if not train_features and not train_labels:
+            Exception("Error! No training data has been created or provided, " +
+            "call split_training_set before this function to save to class.")
+        model.fit(train_features, train_labels)
+
+
     def fit_all(self, train_features=None, train_labels=None):
         if not train_features and not train_labels:
             if len(self.training) == 2:
@@ -57,6 +73,14 @@ class halo:
             models.append(self.lr)
         for m in models:
             m.fit(train_features, train_labels)
+
+
+    def test(self, model, test_features=None, test_labels=None):
+        if not test_features and not test_labels:
+            Exception("Error! No testing data has been created or provided, " +
+            "call split_training_set before this function to save to class.")
+        preds = model.predict(test_features)
+        print(f'{model.__class__.__name__}: {accuracy_score(test_labels, preds)}\n')
 
 
     def test_all(self, test_features=None, test_labels=None):
@@ -90,11 +114,9 @@ class halo:
         if not self.training:
             Exception("Error! No training data has been created, call split_training_set before this function.")
         df = self.training_to_dataframe(columns=columns)
-        if filename:
-            df.to_csv(filename, index=False)
-        else:
-            filename = f'halo_training_{str(time.time()).replace(".", "_")}'
-            df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
+        if not filename:
+            filename = os.path.join(self.basepath, f'halo_training_{str(time.time()).replace(".", "_")}.csv')
+        df.to_csv(filename, index=False)
         
 
     def testing_to_dataframe(self, columns: list = []):
@@ -110,11 +132,9 @@ class halo:
         if not self.testing:
             Exception("Error! No testing data has been created, call split_testing_set before this function.")
         df = self.testing_to_dataframe(columns=columns)
-        if filename:
-            df.to_csv(filename, index=False)
-        else:
-            filename = f'halo_testing_{str(time.time()).replace(".", "_")}'
-            df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
+        if not filename:
+            filename = os.path.join(self.basepath, f'halo_testing_{str(time.time()).replace(".", "_")}.csv')
+        df.to_csv(filename, index=False)
             
     
     def training_to_visual(self, columns: list = []):

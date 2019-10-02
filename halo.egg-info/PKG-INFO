@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: halo
-Version: 0.17
+Version: 0.18
 Summary: Library to dynamically train and test different classifiers in bulk
 Home-page: https://www.github.com/tannerburns/halo
 Author: Tanner Burns
