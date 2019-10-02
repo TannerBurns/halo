@@ -1,6 +1,7 @@
 import os
 import time
 import pandas
+import pandas_profiling
 
 
 from sklearn.naive_bayes import GaussianNB
@@ -77,46 +78,55 @@ class halo:
 
 
     def training_to_dataframe(self, columns: list = []):
-        if self.training:
-            if not columns:
-                columns = [f'{i}' for i in range(0, len(self.training[0][0]))]
-            df = pandas.DataFrame(self.training[0], columns=columns)
-            return df
-        else:
+        if not self.training:
             Exception("Error! No training data has been created, call split_training_set before this function.")
+        if not columns:
+            columns = [f'{i}' for i in range(0, len(self.training[0][0]))]
+        df = pandas.DataFrame(self.training[0], columns=columns)
+        return df         
 
 
     def training_to_csv(self, filename: str = '', columns: list = []):
-        if self.training:
-            df = self.training_to_dataframe(columns=columns)
-            if filename:
-                df.to_csv(filename, index=False)
-            else:
-                filename = f'halo_training_{str(time.time()).replace(".", "_")}'
-                df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
-            return True
-        else:
+        if not self.training:
             Exception("Error! No training data has been created, call split_training_set before this function.")
-
+        df = self.training_to_dataframe(columns=columns)
+        if filename:
+            df.to_csv(filename, index=False)
+        else:
+            filename = f'halo_training_{str(time.time()).replace(".", "_")}'
+            df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
+        
 
     def testing_to_dataframe(self, columns: list = []):
-        if self.testing:
-            if not columns:
-                columns = [f'{i}' for i in range(0, len(self.testing[0][0]))]
-            df = pandas.DataFrame(self.testing[0], columns=columns)
-            return df
-        else:
+        if not self.testing:
             Exception("Error! No testing data has been created, call split_testing_set before this function.")
-
+        if not columns:
+            columns = [f'{i}' for i in range(0, len(self.testing[0][0]))]
+        df = pandas.DataFrame(self.testing[0], columns=columns)
+        return df
+            
 
     def testing_to_csv(self, filename: str = '', columns: list = []):
-        if self.testing:
-            df = self.testing_to_dataframe(columns=columns)
-            if filename:
-                df.to_csv(filename, index=False)
-            else:
-                filename = f'halo_testing_{str(time.time()).replace(".", "_")}'
-                df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
-            return True
-        else:
+        if not self.testing:
             Exception("Error! No testing data has been created, call split_testing_set before this function.")
+        df = self.testing_to_dataframe(columns=columns)
+        if filename:
+            df.to_csv(filename, index=False)
+        else:
+            filename = f'halo_testing_{str(time.time()).replace(".", "_")}'
+            df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
+            
+    
+    def training_to_visual(self, columns: list = []):
+        if not self.training:
+            Exception("Error! No training data has been created, call split_training_set before this function.")
+        df = self.training_to_dataframe(columns=columns)
+        return df.profile_report()
+    
+
+    def testing_to_visual(self, columns: list = []):
+        if not self.testing:
+            Exception("Error! No testing data has been created, call split_training_set before this function.")
+        df = self.testing_to_dataframe(columns=columns)
+        return df.profile_report()
+        
