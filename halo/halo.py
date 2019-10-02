@@ -16,103 +16,107 @@ from sklearn.metrics import accuracy_score
 
 class halo:
     def __init__(self):
+        self.basepath = os.path.realpath(os.getcwd())
         self.prepare()
 
-    def split_training_set(self, features, labels):
-        return train_test_split(features, labels, test_size=0.20, random_state=16)
+
+    def split_training_set(self, features: list, labels: list, test_size=0.20, random_state=16):
+        train, test, train_labels, test_labels = train_test_split(
+            features, 
+            labels, 
+            test_size = test_size, 
+            random_state = random_state
+        )
+        self.training = (train, train_labels)
+        self.testing = (test, test_labels)
+        return train, test, train_labels, test_labels
+
 
     def prepare(self, gamma=0.0001, C=float(100), solver='lbfgs', n_neighbors=3, n_clusters=2, random_state=1):
-        self.basepath = os.path.realpath(os.getcwd())
-        svc = SVC(gamma=gamma, C=C)
-        self.svc = {
-            "name": "SVC",
-            "call": svc,
-            "check": None,
-            "skip": False
-        }
-        mlp = MLPClassifier(solver=solver, random_state=random_state)
-        self.mlp = {
-            "name": "NeuralNetMLP",
-            "call": mlp,
-            "check": None,
-            "skip": False
-        }
-        kneighbors = KNeighborsClassifier(n_neighbors=n_neighbors)
-        self.kneighbors = {
-            "name": "KNearestNeighbors",
-            "call": kneighbors,
-            "check": None,
-            "skip": False
-        }
-        gaussian = GaussianNB()
-        self.gaussian = {
-            "name": "GaussianNB",
-            "call": gaussian,
-            "check": None,
-            "skip": False
-        }
-        kmeans = KMeans(n_clusters=n_clusters, random_state=random_state)
-        self.kmeans = {
-            "name": "KMeans",
-            "call": kmeans,
-            "check": None,
-            "skip": False
-        }
-        lr = LinearRegression()
-        self.linearregression = {
-            "name": "LinearRegression",
-            "call": lr,
-            "check": {
-                "unique_labels": 2
-            },
-            "skip": False
-        }
-        self.models = [
-            self.svc,
-            self.mlp,
-            self.kneighbors,
-            self.gaussian,
-            self.kmeans,
-            self.linearregression
-        ]
+        self.svc = SVC(gamma=gamma, C=C)
+        self.mlp = MLPClassifier(solver=solver, random_state=random_state)
+        self.kneighbors = KNeighborsClassifier(n_neighbors=n_neighbors)
+        self.gaussian = GaussianNB()
+        self.kmeans = KMeans(n_clusters=n_clusters, random_state=random_state)
+        self.lr = LinearRegression()
 
-    def fit(self, train_features, train_labels):
-        self.training = (train_features, train_labels)
-        for m in self.models:
-            if m["check"]:
-                if "unique_labels" in m["check"]:
-                    if len(set(train_labels)) == m["check"]["unique_labels"]:
-                        m["call"].fit(train_features, train_labels)
-                    else:
-                        m["skip"] = True
+
+    def fit_all(self, train_features=None, train_labels=None):
+        if not train_features and not train_labels:
+            if len(self.training) == 2:
+                train_features = self.training[0]
+                train_labels = self.training[1]
             else:
-                m["call"].fit(train_features, train_labels)
+                Exception("Error! No training data has been created or provided, " +
+                "call split_training_set before this function to save to class.")
+        models = [
+            self.svc, self.mlp, self.kneighbors, self.gaussian, self.kmeans
+        ]
+        if len(set(train_labels)) == 2:
+            models.append(self.lr)
+        for m in models:
+            m.fit(train_features, train_labels)
 
-    def test(self, test_features, test_labels):
-        for m in self.models:
-            if not m["skip"]:
-                preds = m["call"].predict(test_features)
-                print(f'{m["name"]}: {accuracy_score(test_labels, preds)}\n')
 
-    def to_dataframe(self, columns: list = []):
+    def test_all(self, test_features=None, test_labels=None):
+        if not test_features and not test_labels:
+            if len(self.testing) == 2:
+                test_features = self.testing[0]
+                test_labels = self.testing[1]
+            else:
+                Exception("Error! No testing data has been created or provided, " +
+                "call split_training_set before this function to save to class.")
+        models = [
+            self.svc, self.mlp, self.kneighbors, self.gaussian, self.kmeans
+        ]
+        if len(set(test_labels)) == 2:
+            models.append(self.lr)
+        for m in models:
+            preds = m.predict(test_features)
+            print(f'{m.__class__.__name__}: {accuracy_score(test_labels, preds)}\n')
+
+
+    def training_to_dataframe(self, columns: list = []):
         if self.training:
             if not columns:
                 columns = [f'{i}' for i in range(0, len(self.training[0][0]))]
             df = pandas.DataFrame(self.training[0], columns=columns)
             return df
         else:
-            Exception("Error! No models have been fit with training data")
-    
-    def to_csv(self, filename: str = '', columns: list = []):
+            Exception("Error! No training data has been created, call split_training_set before this function.")
+
+
+    def training_to_csv(self, filename: str = '', columns: list = []):
         if self.training:
-            df = self.to_dataframe(columns=columns)
+            df = self.training_to_dataframe(columns=columns)
             if filename:
                 df.to_csv(filename, index=False)
             else:
-                filename = f'halo_features_{str(time.time()).replace(".", "_")}'
+                filename = f'halo_training_{str(time.time()).replace(".", "_")}'
                 df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
             return True
         else:
-            Exception("Error! No models have been fit with training data")
+            Exception("Error! No training data has been created, call split_training_set before this function.")
 
 
+    def testing_to_dataframe(self, columns: list = []):
+        if self.testing:
+            if not columns:
+                columns = [f'{i}' for i in range(0, len(self.testing[0][0]))]
+            df = pandas.DataFrame(self.testing[0], columns=columns)
+            return df
+        else:
+            Exception("Error! No testing data has been created, call split_testing_set before this function.")
+
+
+    def testing_to_csv(self, filename: str = '', columns: list = []):
+        if self.testing:
+            df = self.testing_to_dataframe(columns=columns)
+            if filename:
+                df.to_csv(filename, index=False)
+            else:
+                filename = f'halo_testing_{str(time.time()).replace(".", "_")}'
+                df.to_csv(f'{os.path.join(self.basepath, filename)}.csv', index=False)
+            return True
+        else:
+            Exception("Error! No testing data has been created, call split_testing_set before this function.")
