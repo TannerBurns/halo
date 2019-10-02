@@ -49,12 +49,21 @@ class halo:
             filename = os.path.join(self.basepath, f'halo_model_{str(time.time()).replace(".", "_")}.mdl')
         with open(filename, 'wb') as fout:
             pickle.dump(model, fout)
+     
         
+    def load(self, filepath):
+        with open(filepath, 'rb') as fin:
+            return pickle.load(fin)
+
 
     def fit(self, model, train_features=None, train_labels=None):
         if not train_features and not train_labels:
-            Exception("Error! No training data has been created or provided, " +
-            "call split_training_set before this function to save to class.")
+            if len(self.training) == 2:
+                train_features = self.training[0]
+                train_labels = self.training[1]
+            else:
+                Exception("Error! No training data has been created or provided, " +
+                "call split_training_set before this function to save to class.")
         model.fit(train_features, train_labels)
 
 
@@ -77,8 +86,12 @@ class halo:
 
     def test(self, model, test_features=None, test_labels=None):
         if not test_features and not test_labels:
-            Exception("Error! No testing data has been created or provided, " +
-            "call split_training_set before this function to save to class.")
+            if len(self.testing) == 2:
+                test_features = self.testing[0]
+                test_labels = self.testing[1]
+            else:
+                Exception("Error! No testing data has been created or provided, " +
+                "call split_training_set before this function to save to class.")
         preds = model.predict(test_features)
         print(f'{model.__class__.__name__}: {accuracy_score(test_labels, preds)}\n')
 
