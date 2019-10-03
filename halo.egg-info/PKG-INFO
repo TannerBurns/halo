@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: halo
-Version: 0.19
+Version: 0.22.1
 Summary: Library to dynamically train and test different classifiers in bulk
 Home-page: https://www.github.com/tannerburns/halo
 Author: Tanner Burns
@@ -14,11 +14,11 @@ Description: # Halo
         # Example
         
         ```python
-        halo = halo()
+        from halo.multimodelingtools import Covenant
+        halo = Covenant()
         train, test, train_labels, test_labels = halo.split_training_set(features, labels)
-        halo.fit(train, train_labels)
-        halo.test(test, test_labels)
-        halo.to_csv(filename='features.csv')
+        halo.fit_all()
+        halo.test_all()
         ```
         
 Platform: UNKNOWN

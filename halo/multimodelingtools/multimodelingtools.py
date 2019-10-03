@@ -4,7 +4,7 @@ import pickle
 import pandas
 import pandas_profiling
 
-# sklearn import for different classifiers
+# sklearn model
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 
-class halo:
+class Covenant:
     def __init__(self):
         self.basepath = os.path.realpath(os.getcwd())
         self.prepare()
@@ -46,7 +46,7 @@ class halo:
 
     def save(self, model, filename=''):
         if not filename:
-            filename = os.path.join(self.basepath, f'halo_model_{str(time.time()).replace(".", "_")}.mdl')
+            filename = os.path.join(self.basepath, f'model_{str(time.time()).replace(".", "_")}.mdl')
         with open(filename, 'wb') as fout:
             pickle.dump(model, fout)
      
@@ -128,7 +128,7 @@ class halo:
             Exception("Error! No training data has been created, call split_training_set before this function.")
         df = self.training_to_dataframe(columns=columns)
         if not filename:
-            filename = os.path.join(self.basepath, f'halo_training_{str(time.time()).replace(".", "_")}.csv')
+            filename = os.path.join(self.basepath, f'halo_mmt_training_{str(time.time()).replace(".", "_")}.csv')
         df.to_csv(filename, index=False)
         
 
@@ -146,7 +146,7 @@ class halo:
             Exception("Error! No testing data has been created, call split_testing_set before this function.")
         df = self.testing_to_dataframe(columns=columns)
         if not filename:
-            filename = os.path.join(self.basepath, f'halo_testing_{str(time.time()).replace(".", "_")}.csv')
+            filename = os.path.join(self.basepath, f'halo_mmt_testing_{str(time.time()).replace(".", "_")}.csv')
         df.to_csv(filename, index=False)
             
     
