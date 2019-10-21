@@ -2,12 +2,9 @@ MANIFEST.in
 README.md
 setup.py
 halo/__init__.py
+halo/halo.py
 halo.egg-info/PKG-INFO
 halo.egg-info/SOURCES.txt
 halo.egg-info/dependency_links.txt
 halo.egg-info/requires.txt
 halo.egg-info/top_level.txt
-halo/multiclusteringtools/__init__.py
-halo/multiclusteringtools/multiclusteringtools.py
-halo/multimodelingtools/__init__.py
-halo/multimodelingtools/multimodelingtools.py

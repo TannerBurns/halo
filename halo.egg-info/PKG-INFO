@@ -1,20 +1,22 @@
 Metadata-Version: 1.1
 Name: halo
-Version: 0.22.1
-Summary: Library to dynamically train and test different classifiers in bulk
+Version: 0.34.7
+Summary: Utility library for parsing, analysis, clustering, and classifying.
 Home-page: https://www.github.com/tannerburns/halo
 Author: Tanner Burns
 Author-email: tjburns102@gmail.com
 License: UNKNOWN
 Description: # Halo
         
-            Library to dynamically train and test different classifiers in bulk
+        ![Python3.7 badge](https://img.shields.io/badge/python-v3.7-blue)
+        
+            Utility library for parsing, analysis, clustering, and classifying.
         
         
         # Example
         
         ```python
-        from halo.multimodelingtools import Covenant
+        from halo import Covenant
         halo = Covenant()
         train, test, train_labels, test_labels = halo.split_training_set(features, labels)
         halo.fit_all()
@@ -22,9 +24,6 @@ Description: # Halo
         ```
         
 Platform: UNKNOWN
-Classifier: Framework :: Django
-Classifier: Framework :: Django-Rest-Framework
-Classifier: Intended Audience :: Developers
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3.7
