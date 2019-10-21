@@ -9,22 +9,20 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name= 'halo',
-    version= '0.17',
+    version= '0.34.7',
     packages= find_packages(),
     include_package_data= True,
-    description= 'Library to dynamically train and test different classifiers in bulk',
+    description= 'Utility library for parsing, analysis, clustering, and classifying.',
     long_description= README,
     url= 'https://www.github.com/tannerburns/halo',
     author= 'Tanner Burns',
     author_email= 'tjburns102@gmail.com',
     install_requires=[
         "pandas",
+        "pandas_profiling",
         "scikit-learn"
     ],
     classifiers=[
-        'Framework :: Django',
-        'Framework :: Django-Rest-Framework',
-        'Intended Audience :: Developers',  # example license
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.7',

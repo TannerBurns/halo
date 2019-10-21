@@ -1,14 +1,16 @@
 # Halo
 
-    Library to dynamically train and test different classifiers in bulk
+![Python3.7 badge](https://img.shields.io/badge/python-v3.7-blue)
+
+    Utility library for parsing, analysis, clustering, and classifying.
 
 
 # Example
 
 ```python
-halo = halo()
+from halo import Covenant
+halo = Covenant()
 train, test, train_labels, test_labels = halo.split_training_set(features, labels)
-halo.fit(train, train_labels)
-halo.test(test, test_labels)
-halo.to_csv(filename='features.csv')
+halo.fit_all()
+halo.test_all()
 ```
