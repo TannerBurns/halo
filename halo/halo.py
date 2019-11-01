@@ -18,28 +18,15 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cluster import KMeans, DBSCAN
 
+from vast import Vast
 
-
-class Halo(object):
+class Halo(Vast):
     '''Halo -- Base class'''
 
     def __init__(self, workers: int= 32):
-        self.__version__ = '0.34.7'
+        super().__init__(workers=workers)
         self.basepath = os.path.realpath(os.getcwd())
-        self._num_workers = workers
     
-    async def _bulk(self, fn: Callable, args: list):
-        '''_bulk -- run function in threadpoolexecutor
-        
-           fn   -- {Callable} function to run in bulk
-           args -- {list} arguments to be distributed to function
-
-           return -- list of results from function
-        '''
-        with ThreadPoolExecutor(max_workers=self._num_workers) as executor:
-            futures = [self.loop.run_in_executor(executor, partial(fn, a)) for a in args if a]
-            await asyncio.gather(*futures)
-            return [f.result() for f in futures]
     
     def multitask(self, fn:Callable, args: list):
         '''multitask -- run function in bulk
@@ -49,8 +36,8 @@ class Halo(object):
 
            return -- list of results from function
         '''
-        self.loop = asyncio.new_event_loop()
-        return self.loop.run_until_complete(self._bulk(fn ,args))
+        listOfArgs = [([a], ) for a in args]
+        return self.run_in_eventloop(fn, listOfArgs)
     
     
 class BaseParser(Halo):

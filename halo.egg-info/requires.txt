@@ -1,3 +1,0 @@
-pandas
-pandas_profiling
-scikit-learn
